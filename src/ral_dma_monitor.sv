@@ -1,6 +1,6 @@
 class ral_dma_monitor extends uvm_monitor;
   virtual dma_intf vif;
-  uvm_analysis_port #(ral_dma_transaction) item_collected_port;
+  uvm_analysis_port #(ral_dma_sequence_item) item_collected_port;
   ral_dma_transaction seq_item;
 
   `uvm_component_utils(ral_dma_monitor)
