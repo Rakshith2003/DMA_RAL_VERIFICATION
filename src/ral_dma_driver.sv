@@ -1,4 +1,4 @@
-class ral_dma_driver extends uvm_driver #(ral_dma_transaction);
+class ral_dma_driver extends uvm_driver #(ral_dma_sequence_item);
 `uvm_component_utils(ral_dma_driver) 
   
   virtual dma_intf vif;
