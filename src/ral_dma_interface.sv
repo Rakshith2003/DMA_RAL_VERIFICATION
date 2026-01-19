@@ -1,0 +1,2 @@
+interface (clk,rst);
+endinterface
