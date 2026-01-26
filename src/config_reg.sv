@@ -9,9 +9,30 @@ class CONFIG extends uvm_reg;
   rand uvm_reg_field descriptor_mode;
   rand uvm_reg_field Reserved;
    
-    function new(string name = "CONFIG");
-      super.new(name, 32, build_coverage(UVM_NO_COVERAGE));
-    endfunction
+   covergroup config_cg;
+    option.per_instance = 1;
+
+    priority_cp : coverpoint Priority.value {bins low = {0}; bins high = {3}; }
+    int_cp      : coverpoint interrupt_enable.value;
+  endgroup
+
+  function new(string name = "CONFIG");
+    super.new(name, 32, UVM_CVR_FIELD_VALS);
+    if (has_coverage(UVM_CVR_FIELD_VALS))
+      config_cg = new();
+  endfunction
+
+  virtual function void sample(uvm_reg_data_t data,
+                               uvm_reg_data_t byte_en,
+                               bit is_read,
+                               uvm_reg_map map);
+    config_cg.sample();
+  endfunction
+
+  virtual function void sample_values();
+    super.sample_values();
+    config_cg.sample();
+  endfunction
    
     virtual function void build();
       Priority  = uvm_reg_field::type_id::create("Priority");
@@ -30,10 +51,11 @@ class CONFIG extends uvm_reg;
       data_width.configure(this, 2, 6, "RW", 0, 2'h0, 1, 1, 1);
       
       descriptor_mode  = uvm_reg_field::type_id::create("descriptor_mode");
-      descriptor_mode.configure(this, 2, 0, "RW", 0, 2'h0, 1, 1, 1);
+      descriptor_mode.configure(this, 1, 8, "RW", 0, 2'h0, 1, 1, 1);
       
       Reserved  = uvm_reg_field::type_id::create("Reserved");
       Reserved.configure(this, 22, 9, "RO", 0, 22'h0, 1, 1, 1);
       
     endfunction 
 endclass
+

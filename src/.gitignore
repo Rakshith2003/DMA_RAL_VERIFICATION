@@ -1,0 +1,11 @@
+# Questa / simulation junk
+work/
+covReport/
+*.log
+*.ucdb
+*.wlf
+transcript
+
+# Temporary files
+*.swp
+*~

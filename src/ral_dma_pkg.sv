@@ -1,5 +1,6 @@
 package ral_dma_pkg;
       import uvm_pkg::*;
+`include "uvm_macros.svh"
     `include "config_reg.sv"
     `include "ctrl_reg.sv"
     `include "descriptor_addr_reg.sv"
@@ -14,12 +15,13 @@ package ral_dma_pkg;
     `include "ral_dma_sequence_item.sv"
     `include "ral_dma_reg_block.sv"
     `include "ral_dma_adapter.sv"
-    `include "ral_dma_reg_sequence.sv"
+    `include "ral_dma_reg_seq.sv"
     `include "ral_dma_sequencer.sv"
 
     `include "ral_dma_driver.sv"
     `include "ral_dma_monitor.sv"
     `include "ral_dma_agent.sv"
+    `include "ral_dma_predictor.sv"
     `include "ral_dma_environment.sv"
     `include "ral_dma_test.sv"
 endpackage

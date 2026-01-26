@@ -10,34 +10,55 @@ class ERROR_STATUS extends uvm_reg;
   rand uvm_reg_field error_code;
   rand uvm_reg_field error_addr_offset;
    
-    function new(string name = "ERROR_STATUS");
-      super.new(name, 32, build_coverage(UVM_NO_COVERAGE));
-    endfunction
+   covergroup error_cg;
+    option.per_instance = 1;
+
+    err_cp : coverpoint {bus_error.value, timeout_error.value, alignment_error.value,
+                         overflow_error.value, underflow_error.value};
+  endgroup
+
+  function new(string name = "ERROR_STATUS");
+    super.new(name, 32, UVM_CVR_FIELD_VALS);
+    if (has_coverage(UVM_CVR_FIELD_VALS))
+      error_cg = new();
+  endfunction
+
+  virtual function void sample(uvm_reg_data_t data,
+                               uvm_reg_data_t byte_en,
+                               bit is_read,
+                               uvm_reg_map map);
+    error_cg.sample();
+  endfunction
+
+  virtual function void sample_values();
+    super.sample_values();
+    error_cg.sample();
+  endfunction
    
     virtual function void build();
       bus_error  = uvm_reg_field::type_id::create("bus_error");
-      bus_error.configure(this, 1, 0, "RW1C", 0, 1'h0, 1, 1, 1);
+      bus_error.configure(this, 1, 0, "W1C", 0, 1'h0, 1, 1, 1);
       
       timeout_error  = uvm_reg_field::type_id::create("timeout_error");
-      timeout_error.configure(this, 1, 1, "RW1C", 0, 1'h0, 1, 1, 1);
+      timeout_error.configure(this, 1, 1, "W1C", 0, 1'h0, 1, 1, 1);
       
       alignment_error  = uvm_reg_field::type_id::create("alignment_error");
-      alignment_error.configure(this, 1, 2, "RW1C", 0, 1'h0, 1, 1, 1);
+      alignment_error.configure(this, 1, 2, "W1C", 0, 1'h0, 1, 1, 1);
       
       overflow_error  = uvm_reg_field::type_id::create("overflow_error");
-      overflow_error.configure(this, 1, 3, "RW1C", 0, 1'h0, 1, 1, 1);
+      overflow_error.configure(this, 1, 3, "W1C", 0, 1'h0, 1, 1, 1);
       
       underflow_error  = uvm_reg_field::type_id::create("underflow_error");
-      underflow_error.configure(this, 1, 4, "RW1C", 0, 1'h0, 1, 1, 1);
+      underflow_error.configure(this, 1, 4, "W1C", 0, 1'h0, 1, 1, 1);
       
       Reserved  = uvm_reg_field::type_id::create("Reserved");
       Reserved.configure(this, 3, 5, "RO", 0, 3'h0, 1, 1, 1);
       
       error_code  = uvm_reg_field::type_id::create("error_code");
-      error_code.configure(this, 8, 8, "RO", 0, 8'h0, 1, 1, 1);
+      error_code.configure(this, 8, 8, "W1C", 0, 8'h0, 1, 1, 1);
       
       error_addr_offset = uvm_reg_field::type_id::create("error_addr_offset");
-      error_addr_offset.configure(this, 16, 16, "RO", 0, 16'h0, 1, 1, 1);
+      error_addr_offset.configure(this, 16, 16, "W1C", 0, 16'h0, 1, 1, 1);
       
     endfunction 
  
