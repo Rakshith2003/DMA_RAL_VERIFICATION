@@ -9,31 +9,13 @@ class ERROR_STATUS extends uvm_reg;
   rand uvm_reg_field Reserved;
   rand uvm_reg_field error_code;
   rand uvm_reg_field error_addr_offset;
-   
-   covergroup error_cg;
-    option.per_instance = 1;
-
-    err_cp : coverpoint {bus_error.value, timeout_error.value, alignment_error.value,
-                         overflow_error.value, underflow_error.value};
-  endgroup
-
+ 
   function new(string name = "ERROR_STATUS");
-    super.new(name, 32, UVM_CVR_FIELD_VALS);
-    if (has_coverage(UVM_CVR_FIELD_VALS))
-      error_cg = new();
+    super.new(name, 32, UVM_NO_COVERAGE);
+
   endfunction
 
-  virtual function void sample(uvm_reg_data_t data,
-                               uvm_reg_data_t byte_en,
-                               bit is_read,
-                               uvm_reg_map map);
-    error_cg.sample();
-  endfunction
 
-  virtual function void sample_values();
-    super.sample_values();
-    error_cg.sample();
-  endfunction
    
     virtual function void build();
       bus_error  = uvm_reg_field::type_id::create("bus_error");

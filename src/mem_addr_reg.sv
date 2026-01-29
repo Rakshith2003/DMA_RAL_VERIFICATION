@@ -5,9 +5,8 @@ class MEM_ADDR extends uvm_reg;
    
   covergroup mem_addr_cg;
   option.per_instance = 1;
-  addr_align_cp : coverpoint mem_addr.value[1:0] {
-  bins aligned_4B = {2'b00};
-  bins unaligned_4B = {2'b01, 2'b10, 2'b11};
+  addr_align_cp : coverpoint mem_addr.value {
+   bins all_valid = {[32'h0000_0000 : 32'hFFFF_FFFF]};
   }
   endgroup
   

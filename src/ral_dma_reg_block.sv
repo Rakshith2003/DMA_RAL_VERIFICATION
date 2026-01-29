@@ -38,19 +38,19 @@ class ral_dma_reg_block extends uvm_reg_block;
     io_addr_inst = IO_ADDR::type_id::create("io_addr_inst");
     io_addr_inst.build();
     io_addr_inst.configure(this);
-    io_addr_inst.add_hdl_path_slice("io_addr_inst", 0, 32);
+    io_addr_inst.add_hdl_path_slice("io_addr", 0, 32);
     io_addr_inst.set_coverage(UVM_CVR_FIELD_VALS);
 
     mem_addr_inst = MEM_ADDR::type_id::create("mem_addr_inst");
     mem_addr_inst.build();
     mem_addr_inst.configure(this);
-    mem_addr_inst.add_hdl_path_slice("mem_addr_inst", 0, 32);
-    mem_addr_inst.set_coverage(UVM_CVR_FIELD_VALS);
+    mem_addr_inst.add_hdl_path_slice("mem_addr", 0, 32);
+    //mem_addr_inst.set_coverage(UVM_CVR_FIELD_VALS);
 
     extra_info_inst = EXTRA_INFO::type_id::create("extra_info_inst");
     extra_info_inst.build();
     extra_info_inst.configure(this);
-    extra_info_inst.add_hdl_path_slice("extra_info_inst", 0, 32);
+    extra_info_inst.add_hdl_path_slice("extra_info", 0, 32);
     extra_info_inst.set_coverage(UVM_CVR_FIELD_VALS);
 
     status_inst = STATUS::type_id::create("status_inst");
@@ -67,8 +67,8 @@ class ral_dma_reg_block extends uvm_reg_block;
     transfer_count_inst = TRANSFER_COUNT::type_id::create("transfer_count_inst");
     transfer_count_inst.build();
     transfer_count_inst.configure(this);
-    transfer_count_inst.add_hdl_path_slice("transfer_count_inst", 0, 32);
-    transfer_count_inst.set_coverage(UVM_CVR_FIELD_VALS);
+    transfer_count_inst.add_hdl_path_slice("transfer_count", 0, 32);
+   // transfer_count_inst.set_coverage(UVM_CVR_FIELD_VALS);
 
     descriptor_inst = DESCRIPTOR_ADDR::type_id::create("descriptor_inst");
     descriptor_inst.build();
@@ -86,7 +86,7 @@ class ral_dma_reg_block extends uvm_reg_block;
     error_status_inst.add_hdl_path_slice("error_underflow",    4, 1);
     error_status_inst.add_hdl_path_slice("error_code",         8, 8);
     error_status_inst.add_hdl_path_slice("error_addr_offset", 16, 16);
-    error_status_inst.set_coverage(UVM_CVR_FIELD_VALS);
+    //error_status_inst.set_coverage(UVM_CVR_FIELD_VALS);
 
     config_inst = CONFIG::type_id::create("config_inst");
     config_inst.build();

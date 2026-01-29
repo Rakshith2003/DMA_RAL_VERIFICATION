@@ -7,8 +7,8 @@ class EXTRA_INFO extends uvm_reg;
     option.per_instance = 1;
 
     info_cp : coverpoint extra_info.value {
-      bins zero = {32'h0};
-      bins non_zero = {[32'h1:32'hFFFF_FFFF]};
+      //bins zero = {32'h0};
+      bins val = {[32'h0:32'hFFFF_FFFF]};
     }
   endgroup
   

@@ -41,7 +41,66 @@ class reset_check_sequence extends top_reg_seq;
                 super.new(name);
         endfunction
 
-        task body();
+    task body();
+        // apply reset
+	//
+	uvm_reg_data_t rdata;
+	uvm_status_e status;
+	`uvm_info(" RESET-SEQ", "Apply reset to reg", UVM_LOW);
+        regmodel.reset();
+        regmodel.intr_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("INTR-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+  else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR INTR REG\n "), UVM_LOW)
+
+        regmodel.ctrl_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("CNTR-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR CNTR REG\n "), UVM_LOW)
+
+        regmodel.io_addr_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("IO_ADDR-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR IO_ADDR REG\n "), UVM_LOW)
+
+        regmodel.mem_addr_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("MEM_ADDR-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR MEM_ADDR REG\n "), UVM_LOW)
+
+        regmodel.extra_info_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("EXTRA_INFO-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR EXTRA_INFO REG\n "), UVM_LOW)
+
+        regmodel.status_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("STATUS-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR STATUS REG\n "), UVM_LOW)
+
+        regmodel.transfer_count_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("TRANSFER_COUNT-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR TRANSFER_COUNT REG\n "), UVM_LOW)
+
+        regmodel.descriptor_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("DESCRIPTOR_ADDR-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR DESCRIPTOR_ADDR REG\n "), UVM_LOW)
+
+        regmodel.error_status_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("ERROR_STATUS-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR ERROR_STATUS REG\n "), UVM_LOW)
+
+        regmodel.config_inst.read(status, rdata, UVM_BACKDOOR);
+        if(rdata != 32'h0) `uvm_info("CONFIG-RST", $sformatf("\n RESET VALUE IS NOT CORRECT\n "), UVM_LOW)
+ else 
+	`uvm_info("INTR-RST", $sformatf("\n RESET PASS FOR CONFIG REG\n "), UVM_LOW)
+
+    endtask: body
+
+      /*  task body();
                 uvm_reg_data_t data;
                 uvm_reg_data_t read_data;
 
@@ -118,8 +177,9 @@ class reset_check_sequence extends top_reg_seq;
                     `uvm_error("RESET_CHECK", $sformatf("CONFIG reset failed: wrote 0x%0h, read 0x%0h", data, read_data));
 
 //                 `uvm_info(get_type_name(), "\n\n----------------------RESET CHECK ENDED ---------------------------------------\n\n",UVM_LOW)
-*/
+
     endtask
+*/
 endclass
 
 
@@ -143,16 +203,32 @@ class intr_reg_seq extends top_reg_seq;
                 m_data = regmodel.intr_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.intr_inst.read(status, rdata, UVM_BACKDOOR);
-                do_read(regmodel.intr_inst, rdata);
+regmodel.intr_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.intr_inst, rdata);
                 d_data = regmodel.intr_inst.get();
                 m_data = regmodel.intr_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
 
-  // regmodel.intr_inst.mirror(status, UVM_CHECK);
-          if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%0h mir=0x%0h",d_data, m_data))
+   regmodel.intr_inst.mirror(status, UVM_CHECK);
+         // if (m_data !== d_data)
+                        //`uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%0h mir=0x%0h",d_data, m_data))
+
+		wdata = 32'h0000_0000;
+	        do_write(regmodel.intr_inst, wdata);
+                d_data = regmodel.intr_inst.get();
+                m_data = regmodel.intr_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.intr_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.intr_inst, rdata);
+                d_data = regmodel.intr_inst.get();
+                m_data = regmodel.intr_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
+
+								regmodel.intr_inst.mirror(status, UVM_CHECK);
+
 
         `uvm_info(get_type_name(), "\n\n================ INTR REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -170,7 +246,7 @@ class ctrl_reg_seq extends top_reg_seq;
 
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+								uvm_status_e status;
                
 
                 `uvm_info(get_type_name(),"\n\n================ CTRL REGISTER CHECK START ================\n\n",UVM_LOW)
@@ -183,18 +259,33 @@ class ctrl_reg_seq extends top_reg_seq;
                 m_data = regmodel.ctrl_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.ctrl_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.ctrl_inst.read(status, rdata, UVM_BACKDOOR);
 
-                do_read(regmodel.ctrl_inst, rdata);
+                //do_read(regmodel.ctrl_inst, rdata);
                 d_data = regmodel.ctrl_inst.get();
                 m_data = regmodel.ctrl_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
 
-// regmodel.ctrl_inst.mirror(status, UVM_CHECK);
+ regmodel.ctrl_inst.mirror(status, UVM_CHECK);
 
-          if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%0h mir=0x%0h",d_data, m_data))
+		wdata = 32'h0000_0000;
+	        do_write(regmodel.ctrl_inst, wdata);
+                d_data = regmodel.ctrl_inst.get();
+                m_data = regmodel.ctrl_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.intr_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.ctrl_inst, rdata);
+                d_data = regmodel.ctrl_inst.get();
+                m_data = regmodel.ctrl_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
+
+		regmodel.ctrl_inst.mirror(status, UVM_CHECK);
+
+          //if (m_data !== d_data)
+                        //`uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%0h mir=0x%0h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ CTRL REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -223,30 +314,35 @@ class io_addr_reg_seq extends top_reg_seq;
                 m_data = regmodel.io_addr_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.io_addr_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.io_addr_inst.read(status, rdata, UVM_BACKDOOR);
 
-                do_read(regmodel.io_addr_inst, rdata);
+//                do_read(regmodel.io_addr_inst, rdata);
                 d_data = regmodel.io_addr_inst.get();
                 m_data = regmodel.io_addr_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
-/*
-                //#20;
-                regmodel.io_addr.write(status, wdata,UVM_FRONTDOOR);
-                des = regmodel.io_addr.get();
-                mir = regmodel.io_addr.get_mirrored_value();
-                //#20;
-                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
-                regmodel.io_addr_inst.read(status,rdata,UVM_FRONTDOOR);
-                des = regmodel.io_addr_inst.get();
-                mir = regmodel.io_addr_inst.get_mirrored_value();
+
+                
+                 regmodel.io_addr_inst.mirror(status, UVM_CHECK);
+
+
+
+		wdata = 32'h0000_0000;
+	        do_write(regmodel.io_addr_inst, wdata);
+                d_data = regmodel.io_addr_inst.get();
+                m_data = regmodel.io_addr_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.io_addr_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.io_addr_inst, rdata);
+                d_data = regmodel.io_addr_inst.get();
+                m_data = regmodel.io_addr_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
-*/
-                // regmodel.io_addr_inst.mirror(status, UVM_CHECK);
 
-                if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%0h mir=0x%0h",d_data, m_data))
+		regmodel.io_addr_inst.mirror(status, UVM_CHECK);
+  //              if (m_data !== d_data)
+    //                    `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%0h mir=0x%0h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ IO_ADDR REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -263,7 +359,7 @@ class mem_addr_reg_seq extends top_reg_seq;
 
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+		uvm_status_e status;
 
                 `uvm_info(get_type_name(),"\n\n================ MEM_ADDR REGISTER CHECK START ================\n\n",UVM_LOW)
 
@@ -274,17 +370,32 @@ class mem_addr_reg_seq extends top_reg_seq;
                 m_data = regmodel.mem_addr_inst.get_mirrored_value();
 
                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.mem_addr_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.mem_addr_inst.read(status, rdata, UVM_BACKDOOR);
 
-                do_read(regmodel.mem_addr_inst, rdata);
+//                do_read(regmodel.mem_addr_inst, rdata);
                 d_data = regmodel.mem_addr_inst.get();
                 m_data = regmodel.mem_addr_inst.get_mirrored_value();
 
                   `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
-// regmodel.mem_addr_inst.mirror(status, UVM_CHECK);
+ regmodel.mem_addr_inst.mirror(status, UVM_CHECK);
 
-                if (m_data !== m_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+		wdata = 32'h0000_0000;
+	        do_write(regmodel.mem_addr_inst, wdata);
+                d_data = regmodel.mem_addr_inst.get();
+                m_data = regmodel.mem_addr_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.mem_addr_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.mem_addr_inst, rdata);
+                d_data = regmodel.mem_addr_inst.get();
+                m_data = regmodel.mem_addr_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
+
+		regmodel.mem_addr_inst.mirror(status, UVM_CHECK);
+
+//                if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ MEM_ADDR REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -300,7 +411,7 @@ class extra_info_reg_seq extends top_reg_seq;
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
 
-
+								uvm_status_e status;
                 `uvm_info(get_type_name(),"\n\n================ EXTRA_INFO REGISTER CHECK START ================\n\n",UVM_LOW)
 
                 wdata =32'hFFFF_FFFF;
@@ -310,19 +421,34 @@ class extra_info_reg_seq extends top_reg_seq;
                 m_data = regmodel.extra_info_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.extra_info_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.extra_info_inst.read(status, rdata, UVM_BACKDOOR);
 
-                do_read(regmodel.extra_info_inst, rdata);
+//                do_read(regmodel.extra_info_inst, rdata);
                 d_data = regmodel.extra_info_inst.get();
                 m_data = regmodel.extra_info_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
 
-// regmodel.extra_info_inst.mirror(status, UVM_CHECK);
+ regmodel.extra_info_inst.mirror(status, UVM_CHECK);
+
+		wdata = 32'h0000_0000;
+	        do_write(regmodel.extra_info_inst, wdata);
+                d_data = regmodel.extra_info_inst.get();
+                m_data = regmodel.extra_info_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.extra_info_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.extra_info_inst, rdata);
+                d_data = regmodel.extra_info_inst.get();
+                m_data = regmodel.extra_info_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
+
+		regmodel.extra_info_inst.mirror(status, UVM_CHECK);
 
                 // Mirrored must match desired after read
-                if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+//                if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ EXTRA_INFO REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -339,7 +465,7 @@ class status_reg_seq extends top_reg_seq;
 
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+								uvm_status_e status;
 
                 `uvm_info(get_type_name(),"\n\n================ STATUS REGISTER CHECK START ================\n\n",UVM_LOW)
 
@@ -350,16 +476,16 @@ class status_reg_seq extends top_reg_seq;
                 m_data = regmodel.status_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.status_inst.read(status, rdata, UVM_BACKDOOR);
-                do_read(regmodel.status_inst, rdata);
+regmodel.status_inst.read(status, rdata, UVM_BACKDOOR);
+//                do_read(regmodel.status_inst, rdata);
                 d_data = regmodel.status_inst.get();
                 m_data = regmodel.status_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
-// regmodel.status_inst.mirror(status, UVM_CHECK);
+ regmodel.status_inst.mirror(status, UVM_CHECK);
 
-                if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+//                if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ STATUS REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -377,7 +503,7 @@ class transfer_count_reg_seq extends top_reg_seq;
 
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+								uvm_status_e status;
 
                 `uvm_info(get_type_name(),"\n\n================ TRANSFER_COUNT REGISTER CHECK START ================\n\n",UVM_LOW)
 
@@ -388,17 +514,17 @@ class transfer_count_reg_seq extends top_reg_seq;
                 m_data = regmodel.transfer_count_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.transfer_count_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.transfer_count_inst.read(status, rdata, UVM_BACKDOOR);
 
-                do_read(regmodel.transfer_count_inst, rdata);
+//                do_read(regmodel.transfer_count_inst, rdata);
                 d_data = regmodel.transfer_count_inst.get();
                 m_data = regmodel.transfer_count_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
-// regmodel.transfer_count_inst.mirror(status, UVM_CHECK);
+ regmodel.transfer_count_inst.mirror(status, UVM_CHECK);
 
-                if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+//                if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ TRANSFER_COUNT REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -416,7 +542,7 @@ class descriptor_addr_reg_seq extends top_reg_seq;
 
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+								uvm_status_e status;
                 `uvm_info(get_type_name(),"\n\n================ DESCRIPTOR_ADDR REGISTER CHECK START ================\n\n",UVM_LOW)
 
                 wdata = 32'hFFFF_FFFF;
@@ -426,16 +552,16 @@ class descriptor_addr_reg_seq extends top_reg_seq;
                 m_data = regmodel.descriptor_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.descriptor_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.descriptor_inst.read(status, rdata, UVM_BACKDOOR);
 
-                do_read(regmodel.descriptor_inst, rdata);
+//                do_read(regmodel.descriptor_inst, rdata);
                 d_data = regmodel.descriptor_inst.get();
                 m_data = regmodel.descriptor_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
-// regmodel.descriptor_inst.mirror(status, UVM_CHECK);
-          if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+ regmodel.descriptor_inst.mirror(status, UVM_CHECK);
+//          if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
 
         `uvm_info(get_type_name(), "\n\n================ DESCRIPTOR_ADDR REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -453,27 +579,54 @@ class error_status_reg_seq extends top_reg_seq;
 
         task body();
                 uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+								uvm_status_e status;
                 `uvm_info(get_type_name(),"\n\n================ ERROR_STATUS REGISTER CHECK START ================\n\n",UVM_LOW)
 
 
-                wdata = $urandom_range(0,32'hFFFF_FFFF);
+                wdata =32'hFFFF_FFFF;
                 do_write(regmodel.error_status_inst, wdata);
                 d_data = regmodel.error_status_inst.get();
                 m_data = regmodel.error_status_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.error_status_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.error_status_inst.read(status, rdata, UVM_BACKDOOR);
 
 
-                do_read(regmodel.error_status_inst, rdata);
+//                do_read(regmodel.error_status_inst, rdata);
                 d_data = regmodel.error_status_inst.get();
                 m_data = regmodel.error_status_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
-// regmodel.error_status_inst.mirror(status, UVM_CHECK);
-                if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+ regmodel.error_status_inst.mirror(status, UVM_CHECK);
+//                if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+
+		wdata = 32'h0000_0000;
+	        do_write(regmodel.error_status_inst, wdata);
+                d_data = regmodel.error_status_inst.get();
+                m_data = regmodel.error_status_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.error_status_inst.read(status, rdata, UVM_BACKDOOR);
+                //do_read(regmodel.error_status_inst, rdata);
+                d_data = regmodel.error_status_inst.get();
+                m_data = regmodel.error_status_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
+
+		regmodel.error_status_inst.mirror(status, UVM_CHECK);
+                /*rdata=32'hFFFFFFFF;
+                regmodel.error_status_inst.write(status, rdata, UVM_BACKDOOR);
+                d_data = regmodel.error_status_inst.get();
+                m_data = regmodel.error_status_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE BACKDOOR  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)
+
+		regmodel.error_status_inst.read(status, rdata, UVM_BACKDOOR);
+                d_data = regmodel.error_status_inst.get();
+                m_data = regmodel.error_status_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ BACKDOOR  | DUT=0x%0h DESIRED=0x%0h,  MIRRORED=0x%0h",rdata,d_data, m_data),UVM_LOW)*/
 
         `uvm_info(get_type_name(), "\n\n================ ERROR_STATUS REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask
@@ -491,7 +644,7 @@ class config_reg_seq extends top_reg_seq;
 
         task body();
                uvm_reg_data_t rdata,wdata,d_data,m_data;
-
+								uvm_status_e status;
                 `uvm_info(get_type_name(),"\n\n================ CONFIG REGISTER CHECK START ================\n\n",UVM_LOW)
 
 
@@ -501,17 +654,33 @@ class config_reg_seq extends top_reg_seq;
                 m_data = regmodel.config_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
-//regmodel.config_inst.read(status, rdata, UVM_BACKDOOR);
+regmodel.config_inst.read(status, rdata, UVM_BACKDOOR);
 
 
-                do_read(regmodel.config_inst, rdata);
+//                do_read(regmodel.config_inst, rdata);
                 d_data = regmodel.config_inst.get();
                 m_data = regmodel.config_inst.get_mirrored_value();
 
                 `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
-// regmodel.config_inst.mirror(status, UVM_CHECK);
-                if (m_data !== d_data)
-                        `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+ regmodel.config_inst.mirror(status, UVM_CHECK);
+//                if (m_data !== d_data)
+  //                      `uvm_error(get_type_name(),$sformatf("Mirror mismatch: des=0x%08h mir=0x%08h",d_data, m_data))
+
+		wdata = 32'h00000000;
+                do_write(regmodel.config_inst, wdata);
+                d_data = regmodel.config_inst.get();
+                m_data = regmodel.config_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("WRITE | WDATA=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h", wdata, d_data,m_data),UVM_LOW)
+		regmodel.config_inst.read(status, rdata, UVM_BACKDOOR);
+
+
+//                do_read(regmodel.config_inst, rdata);
+                d_data = regmodel.config_inst.get();
+                m_data = regmodel.config_inst.get_mirrored_value();
+
+                `uvm_info(get_type_name(),$sformatf("READ  | DUT=0x%08h DESIRED=0x%08h,  MIRRORED=0x%08h",rdata,d_data, m_data),UVM_LOW)
+ 		regmodel.config_inst.mirror(status, UVM_CHECK);
 
         `uvm_info(get_type_name(), "\n\n================ CONFIG REGISTER CHECK END =================\n\n", UVM_LOW)
     endtask

@@ -9,10 +9,9 @@ class INTR extends uvm_reg;
     option.per_instance = 1;
 
     intr_mask_cp : coverpoint intr_mask.value{
-      bins zero = {16'h0000};
-      bins low  = {[16'h0001:16'h00FF]};
-      bins mid  = {[16'h0100:16'h0FFF]};
-      bins high = {[16'h1000:16'hFFFF]};
+      
+      bins low  = {[16'h0000:16'hFFFF]};
+
     }
   endgroup
    

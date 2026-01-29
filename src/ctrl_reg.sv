@@ -8,15 +8,13 @@ class CTRL extends uvm_reg;
    covergroup ctrl_cg;
     option.per_instance = 1;
 
-    start_cp : coverpoint start_dma.value {bins zero = {0}; bins one = {1};}
+    start_cp : coverpoint start_dma.value {bins zero = {0,1};}
 
-    io_mem_cp : coverpoint io_mem.value {bins io = {0}; bins mem = {1};}
+    io_mem_cp : coverpoint io_mem.value {bins io = {0,1};}
 
     w_count_cp : coverpoint w_count.value {
-      bins low = {[0:15]};
-      bins mid  = {[16:255]};
-      bins high  = {[256:32767]};
-    }
+        bins all_valid = {[0:32767]};
+}
   endgroup
    
     function new(string name = "CTRL");

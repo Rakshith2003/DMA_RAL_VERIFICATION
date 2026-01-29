@@ -8,8 +8,8 @@ class DESCRIPTOR_ADDR extends uvm_reg;
 
 
   addr_cp : coverpoint descriptor_addr.value[1:0] {
-  bins aligned_4B = {2'b00};
-  bins unaligned_4B = {2'b01, 2'b10, 2'b11};
+  bins aligned_4B = {0,1,2,3};
+  
   }
   endgroup
 

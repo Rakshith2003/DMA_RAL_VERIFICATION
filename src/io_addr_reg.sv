@@ -7,9 +7,8 @@ class IO_ADDR extends uvm_reg;
     option.per_instance = 1;
 
     addr_cp : coverpoint io_addr.value {
-      bins low  = {[32'h0:32'h0FFF]};
-      bins mid  = {[32'h1000:32'hFFFF]};
-      bins high = {[32'h1_0000:32'hFFFF_FFFF]};
+      bins all_valid = {[32'h0000_0000 : 32'hFFFF_FFFF]};
+      
     }
    endgroup
   

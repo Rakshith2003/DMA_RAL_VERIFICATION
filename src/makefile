@@ -1,6 +1,6 @@
 QUESTA := /home/share/questa.csh
 SHELL := /bin/csh
-TEST ?= intr_reg_test
+TEST ?= dma_regression_test
 V ?= UVM_MEDIUM
 
 .ONESHELL:	
